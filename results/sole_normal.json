@@ -1,0 +1,8 @@
+{
+ "n_trials": 231,
+ "n_frames": 1176174,
+ "pitch_deg_force_weighted": 11.490933121313459,
+ "pitch_deg_above_half_BW": 11.100054430843752,
+ "vertical_error_pctBW": 1.5633651787363552,
+ "vertical_error_pct_of_local": 2.0727962104414637
+}

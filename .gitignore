@@ -1,0 +1,22 @@
+# Python
+__pycache__/
+*.pyc
+
+# local paths (config.py imports config_local.py if it exists)
+config_local.py
+
+# the data sets are not redistributed (README.md, "Data")
+data/
+
+# logs and partial output of the scripts
+*.log
+*_log.txt
+*_stdout.txt
+*.partial.csv
+*.part
+
+# large intermediate results, recreated by run_all.py; only the trial of Fig. 2 is kept
+results/*_metrics.json
+results/*_timeseries.csv
+!results/WBDS22walkT04_timeseries.csv
+results/*_curves.npy

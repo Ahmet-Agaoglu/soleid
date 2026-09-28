@@ -1,0 +1,9 @@
+{
+ "n_trials": 231,
+ "n_limbs": 462,
+ "mu": 0.8,
+ "frac_frames_active": 6.290753161221883e-05,
+ "max_frac_in_any_limb": 0.013131715081575806,
+ "peak_ratio_mean": 0.4129241687716955,
+ "peak_ratio_max": 0.8000000000000003
+}

@@ -1,0 +1,129 @@
+{
+ "flow": {
+  "total": 382,
+  "retained": 277,
+  "dead belt": 54,
+  "handrail": 28,
+  "force scale": 23,
+  "retained_calibration": 40,
+  "retained_test": 237,
+  "marker_gap_test": 6,
+  "final_test": 231,
+  "final_calibration": 40
+ },
+ "by_group": {
+  "dead belt": {
+   "trials": 54,
+   "subjects": 9,
+   "subjects_losing_every_trial": [
+    "WBDS43",
+    "WBDS44",
+    "WBDS45",
+    "WBDS46",
+    "WBDS47",
+    "WBDS48",
+    "WBDS49",
+    "WBDS50",
+    "WBDS51"
+   ],
+   "calibration_subjects_affected": [],
+   "speed_mean": 0.9224074074074076,
+   "speed_min": 0.34,
+   "speed_max": 1.66,
+   "per_subject": {
+    "WBDS43": 6,
+    "WBDS44": 6,
+    "WBDS45": 6,
+    "WBDS46": 6,
+    "WBDS47": 6,
+    "WBDS48": 6,
+    "WBDS49": 6,
+    "WBDS50": 6,
+    "WBDS51": 6
+   }
+  },
+  "handrail": {
+   "trials": 28,
+   "subjects": 5,
+   "subjects_losing_every_trial": [
+    "WBDS27",
+    "WBDS37",
+    "WBDS32",
+    "WBDS39"
+   ],
+   "calibration_subjects_affected": [],
+   "speed_mean": 1.0757142857142858,
+   "speed_min": 0.4,
+   "speed_max": 2.11,
+   "per_subject": {
+    "WBDS27": 8,
+    "WBDS37": 7,
+    "WBDS32": 6,
+    "WBDS39": 6,
+    "WBDS38": 1
+   }
+  },
+  "force scale": {
+   "trials": 23,
+   "subjects": 3,
+   "subjects_losing_every_trial": [
+    "WBDS40",
+    "WBDS42"
+   ],
+   "calibration_subjects_affected": [],
+   "speed_mean": 1.0756521739130434,
+   "speed_min": 0.36,
+   "speed_max": 1.95,
+   "per_subject": {
+    "WBDS40": 8,
+    "WBDS42": 8,
+    "WBDS41": 7
+   }
+  }
+ },
+ "speed_retained_mean": 1.1462454873646208,
+ "subjects_total": 51,
+ "subjects_kept": 36,
+ "retained_ratio": {
+  "min": 0.780153320471355,
+  "max": 0.9730709124152548,
+  "p5": 0.8974113599752147,
+  "p95": 0.9629781023112608,
+  "median": 0.9331933305723116
+ },
+ "band_sensitivity": {
+  "0.60-1.80": 277,
+  "0.70-1.30": 277,
+  "0.80-1.20": 276,
+  "0.85-1.10": 276,
+  "0.88-1.00": 272
+ },
+ "ratio_structure": {
+  "within_subject_sd": 0.005743964808505558,
+  "between_subject_sd": 0.030410113382136218,
+  "corr_with_speed": 0.11515209731309942,
+  "subject_means_min": 0.780153320471355,
+  "subject_means_max": 0.9662590019901945
+ },
+ "excluded_runs": {
+  "force scale": {
+   "n": 23,
+   "stance": 4.244925353879047,
+   "hip": 0.22989668672949787
+  },
+  "handrail": {
+   "n": 25,
+   "stance": 4.654897058825323,
+   "hip": 0.27957456222590715
+  }
+ },
+ "test_mean": {
+  "stance": 3.1329280071363894,
+  "hip": 0.19945506709482852
+ },
+ "test_plus_excluded": {
+  "n": 279,
+  "stance": 3.360975194474398,
+  "hip": 0.2091437575244857
+ }
+}

@@ -1,0 +1,25 @@
+{
+ "vertical_force_stride_range_pctBW": 114.92301185740911,
+ "vertical_error_of_range_pct": 14.523454592206981,
+ "residual_from_timeseries": 4.478257685172987,
+ "residual_newton_check": 4.461098122008101,
+ "mass_rescaled_residual": 4.532816195098758,
+ "n_timeseries": 231,
+ "combined_increment": 0.8368900180131699,
+ "combined_increment_ci": [
+  0.7593232415129939,
+  0.9151815778871143
+ ],
+ "wang_outlier": {
+  "subject": "Subj08",
+  "worst_alignment": true,
+  "shear_over_median": 2.2843966867440035
+ },
+ "wang_without_outlier": {
+  "stance": 2.937840462621073,
+  "hip": 0.40753913808897985
+ },
+ "spm_max_at_pct": 2,
+ "smallest_lever_m": 0.9373204114269778,
+ "lever_trials": 231
+}

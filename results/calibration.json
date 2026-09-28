@@ -1,0 +1,21 @@
+{
+  "subjects": [
+    "WBDS01",
+    "WBDS05",
+    "WBDS10",
+    "WBDS20",
+    "WBDS30"
+  ],
+  "n_trials": 40,
+  "chosen": {
+    "w_prior": 1.0,
+    "h_vpp": 0.2,
+    "w_torque": 0.0,
+    "fc_smooth": 12.0
+  },
+  "cal_stance": 2.771501592687914,
+  "cal_ds": 3.8511412813663397,
+  "cal_hip": 0.17196336463034653,
+  "grid_size": 108,
+  "seconds": 467.2074429988861
+}

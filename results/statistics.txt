@@ -1,0 +1,120 @@
+==============================================================================
+SoleID -- statistical analysis
+==============================================================================
+
+Controlled layer: 31 subjects, 231 trials
+
+--- 1. mixed models (Fukuchi test set) ---
+
+Shear RMSE during stance (%BW)  (mixed model, subject as random intercept; 924 observations, 31 subjects)
+    kinematics-only                  minus SoleID: +3.229 [+2.996, +3.461]  p = 3.14e-163
+    Newton + proportional split      minus SoleID: +3.214 [+2.982, +3.447]  p = 8.27e-162
+    SoleID without the prior         minus SoleID: +1.315 [+1.083, +1.548]  p = 1.37e-28
+    speed slope: +3.466 per m/s [+3.273, +3.660]  p = 4.22e-270
+
+Shear RMSE during double support (%BW)  (mixed model, subject as random intercept; 924 observations, 31 subjects)
+    kinematics-only                  minus SoleID: +5.799 [+5.488, +6.110]  p = 8.03e-293
+    Newton + proportional split      minus SoleID: +5.720 [+5.409, +6.031]  p = 5.28e-285
+    SoleID without the prior         minus SoleID: +2.022 [+1.711, +2.333]  p = 3.07e-37
+    speed slope: +5.974 per m/s [+5.715, +6.233]  p = 0.00e+00
+
+Hip moment RMSE (Nm/kg)  (mixed model, subject as random intercept; 924 observations, 31 subjects)
+    kinematics-only                  minus SoleID: +0.594 [+0.572, +0.616]  p = 0.00e+00
+    Newton + proportional split      minus SoleID: +0.199 [+0.177, +0.221]  p = 3.66e-69
+    SoleID without the prior         minus SoleID: +0.082 [+0.060, +0.104]  p = 4.42e-13
+    speed slope: +0.253 per m/s [+0.235, +0.272]  p = 5.33e-159
+
+Knee moment RMSE (Nm/kg)  (mixed model, subject as random intercept; 924 observations, 31 subjects)
+    kinematics-only                  minus SoleID: +0.471 [+0.455, +0.488]  p = 0.00e+00
+    Newton + proportional split      minus SoleID: +0.110 [+0.094, +0.127]  p = 6.84e-40
+    SoleID without the prior         minus SoleID: +0.045 [+0.029, +0.061]  p = 6.55e-08
+    speed slope: +0.138 per m/s [+0.124, +0.151]  p = 4.80e-88
+
+    age group (SoleID stance): Older 3.20 %BW, Young 3.10 %BW
+    SoleID stance mean 3.13 %BW [3.00, 3.28] (bootstrap)
+    SoleID hip mean 0.199 Nm/kg [0.191, 0.209] (bootstrap)
+    SoleID beats the Newton baseline in 98.3 % of trials, the no-prior arm in 87.4 %
+
+    prior gain vs whole-body dynamics residual: slope +0.519 [+0.478, +0.561] per %BW, p = 3.4e-134, r = 0.76
+
+--- 2. external validation and application ---
+
+Camargo treadmill, shear RMSE stance (%BW)  (mixed model, subject as random intercept; 77512 observations, 22 subjects)
+    kinematics-only                  minus SoleID: +6.454 [+6.413, +6.495]  p = 0.00e+00
+    Newton + proportional split      minus SoleID: +4.989 [+4.948, +5.030]  p = 0.00e+00
+    SoleID without the prior         minus SoleID: +2.649 [+2.608, +2.690]  p = 0.00e+00
+    speed slope: +3.558 per m/s [+3.523, +3.594]  p = 0.00e+00
+
+Camargo ramp, shear RMSE stance (%BW)  (mixed model, subject as random intercept; 54868 observations, 22 subjects)
+    vertical-only (shear set to zero) minus SoleID: +6.577 [+6.508, +6.647]  p = 0.00e+00
+    Newton + proportional split      minus SoleID: +5.479 [+5.409, +5.549]  p = 0.00e+00
+    SoleID without the prior         minus SoleID: +3.782 [+3.713, +3.852]  p = 0.00e+00
+
+Camargo levelground, shear RMSE stance (%BW)  (mixed model, subject as random intercept; 12960 observations, 22 subjects)
+    vertical-only (shear set to zero) minus SoleID: +6.465 [+6.279, +6.650]  p = 0.00e+00
+    Newton + proportional split      minus SoleID: +4.680 [+4.494, +4.865]  p = 0.00e+00
+    SoleID without the prior         minus SoleID: +3.264 [+3.079, +3.450]  p = 8.39e-261
+
+Wang, hip moment RMSE (Nm/kg)  (mixed model, subject as random intercept; 212 observations, 9 subjects)
+    vertical-only (shear set to zero) minus SoleID: +0.179 [+0.137, +0.221]  p = 7.32e-17
+    Newton + proportional split      minus SoleID: +0.165 [+0.123, +0.207]  p = 1.44e-14
+    SoleID_lab_kin                   minus SoleID: -0.148 [-0.190, -0.106]  p = 4.79e-12
+    speed slope: +0.294 per m/s [+0.259, +0.328]  p = 2.43e-62
+
+Wang, shear RMSE stance (%BW)  (mixed model, subject as random intercept; 216 observations, 9 subjects)
+    vertical-only (shear set to zero) minus SoleID: +3.692 [+3.181, +4.203]  p = 1.73e-45
+    Newton + proportional split      minus SoleID: +1.892 [+1.381, +2.403]  p = 4.03e-13
+    SoleID_lab_kin                   minus SoleID: -0.471 [-0.983, +0.040]  p = 7.07e-02
+    speed slope: +4.598 per m/s [+4.175, +5.021]  p = 1.43e-100
+
+--- 3. equivalence tests (TOST, 90 % CI) ---
+    moving horizon (0.2 s, 50 ms look-ahead) vs batch, Fukuchi: mean difference +0.0008, 90 % CI [-0.0004, +0.0021], bound +-0.5, equivalent: yes (p = 1.2e-51, n = 24)
+    moving horizon vs batch, Wang: mean difference -0.0057, 90 % CI [-0.0082, -0.0032], bound +-0.5, equivalent: yes (p = 1.2e-34, n = 18)
+    Camargo treadmill vs Fukuchi (subject means), generalisation: difference of means +0.380, 90 % CI [+0.094, +0.667], bound +-1.0, equivalent: yes
+
+--- 4. statistical parametric mapping over the gait cycle ---
+    curves: 231 trials averaged to 31 subjects (the unit of analysis)
+    SoleID: shear: 4 significant cluster(s), 41 % of the cycle, t* = 3.39  [spm1d]
+        0-21 % of the cycle
+        26-33 % of the cycle
+        49-61 % of the cycle
+        99-100 % of the cycle
+    SoleID without the prior: shear: 4 significant cluster(s), 32 % of the cycle, t* = 3.44  [spm1d]
+        3-7 % of the cycle
+        12-16 % of the cycle
+        35-47 % of the cycle
+        50-62 % of the cycle
+    Newton + proportional split: shear: 4 significant cluster(s), 37 % of the cycle, t* = 3.47  [spm1d]
+        0-9 % of the cycle
+        13-16 % of the cycle
+        35-47 % of the cycle
+        50-63 % of the cycle
+    vertical-only (shear set to zero): shear: 2 significant cluster(s), 58 % of the cycle  [permutation (SPM1DError)]
+        2-30 % of the cycle
+        33-63 % of the cycle
+    SoleID: ankle moment: 4 significant cluster(s), 40 % of the cycle, t* = 3.43  [spm1d]
+        0-21 % of the cycle
+        27-33 % of the cycle
+        49-61 % of the cycle
+        99-100 % of the cycle
+    vertical-only: ankle moment: 2 significant cluster(s), 57 % of the cycle, t* = 3.41  [spm1d]
+        2-30 % of the cycle
+        33-63 % of the cycle
+    SoleID: knee moment: 4 significant cluster(s), 41 % of the cycle, t* = 3.40  [spm1d]
+        0-21 % of the cycle
+        26-33 % of the cycle
+        49-62 % of the cycle
+        99-100 % of the cycle
+    vertical-only: knee moment: 2 significant cluster(s), 58 % of the cycle, t* = 3.38  [spm1d]
+        2-30 % of the cycle
+        33-63 % of the cycle
+    SoleID: hip moment: 4 significant cluster(s), 40 % of the cycle, t* = 3.40  [spm1d]
+        0-21 % of the cycle
+        27-33 % of the cycle
+        49-62 % of the cycle
+        99-100 % of the cycle
+    vertical-only: hip moment: 2 significant cluster(s), 58 % of the cycle, t* = 3.38  [spm1d]
+        2-30 % of the cycle
+        33-63 % of the cycle
+    SoleID shear: mean absolute difference over the cycle 1.00 %BW, largest 3.75 %BW at 2 % of the cycle
+    SoleID hip moment: mean absolute difference 0.080 Nm/kg, largest 0.311 Nm/kg at 2 %
