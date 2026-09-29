@@ -7,7 +7,6 @@ load; plates are pooled per inclination code and the median over the inclined st
 
 Output: results/ramp_angles.json
 """
-import glob
 import json
 import os
 
@@ -42,7 +41,11 @@ def step_slopes(fp, plate, fs):
 def main():
     rows = []
     for subj in sorted(os.listdir(ca.CSV)):
-        for f in sorted(glob.glob(os.path.join(ca.CSV, subj, "ramp", "fp", "ramp_*.csv"))):
+        d = os.path.join(ca.CSV, subj, "ramp", "fp")
+        # some subjects' files are named Ramp_...; match without regard to case on every system
+        names = sorted(n for n in (os.listdir(d) if os.path.isdir(d) else [])
+                       if n.lower().startswith("ramp_") and n.lower().endswith(".csv"))
+        for f in (os.path.join(d, n) for n in names):
             code = int(os.path.basename(f).split("_")[1])
             fp = pd.read_csv(f)
             fs = 1.0 / np.median(np.diff(fp.Header.values))

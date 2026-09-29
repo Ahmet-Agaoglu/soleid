@@ -20,3 +20,6 @@ results/*_metrics.json
 results/*_timeseries.csv
 !results/WBDS22walkT04_timeseries.csv
 results/*_curves.npy
+
+# run logs
+logs/

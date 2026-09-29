@@ -7,35 +7,35 @@ Controlled layer: 31 subjects, 231 trials
 --- 1. mixed models (Fukuchi test set) ---
 
 Shear RMSE during stance (%BW)  (mixed model, subject as random intercept; 924 observations, 31 subjects)
-    kinematics-only                  minus SoleID: +3.229 [+2.996, +3.461]  p = 3.14e-163
-    Newton + proportional split      minus SoleID: +3.214 [+2.982, +3.447]  p = 8.27e-162
-    SoleID without the prior         minus SoleID: +1.315 [+1.083, +1.548]  p = 1.37e-28
-    speed slope: +3.466 per m/s [+3.273, +3.660]  p = 4.22e-270
+    kinematics-only                  minus SoleID: +3.229 [+2.995, +3.462]  p = 1.14e-161
+    Newton + proportional split      minus SoleID: +3.214 [+2.981, +3.448]  p = 2.90e-160
+    SoleID without the prior         minus SoleID: +1.372 [+1.138, +1.605]  p = 1.16e-30
+    speed slope: +3.472 per m/s [+3.277, +3.666]  p = 2.50e-268
 
 Shear RMSE during double support (%BW)  (mixed model, subject as random intercept; 924 observations, 31 subjects)
-    kinematics-only                  minus SoleID: +5.799 [+5.488, +6.110]  p = 8.03e-293
-    Newton + proportional split      minus SoleID: +5.720 [+5.409, +6.031]  p = 5.28e-285
-    SoleID without the prior         minus SoleID: +2.022 [+1.711, +2.333]  p = 3.07e-37
-    speed slope: +5.974 per m/s [+5.715, +6.233]  p = 0.00e+00
+    kinematics-only                  minus SoleID: +5.799 [+5.486, +6.111]  p = 8.14e-290
+    Newton + proportional split      minus SoleID: +5.720 [+5.408, +6.033]  p = 4.44e-282
+    SoleID without the prior         minus SoleID: +1.980 [+1.667, +2.292]  p = 2.02e-35
+    speed slope: +5.943 per m/s [+5.682, +6.203]  p = 0.00e+00
 
 Hip moment RMSE (Nm/kg)  (mixed model, subject as random intercept; 924 observations, 31 subjects)
     kinematics-only                  minus SoleID: +0.594 [+0.572, +0.616]  p = 0.00e+00
-    Newton + proportional split      minus SoleID: +0.199 [+0.177, +0.221]  p = 3.66e-69
-    SoleID without the prior         minus SoleID: +0.082 [+0.060, +0.104]  p = 4.42e-13
-    speed slope: +0.253 per m/s [+0.235, +0.272]  p = 5.33e-159
+    Newton + proportional split      minus SoleID: +0.199 [+0.177, +0.221]  p = 7.37e-69
+    SoleID without the prior         minus SoleID: +0.086 [+0.063, +0.108]  p = 4.54e-14
+    speed slope: +0.253 per m/s [+0.235, +0.272]  p = 1.25e-158
 
 Knee moment RMSE (Nm/kg)  (mixed model, subject as random intercept; 924 observations, 31 subjects)
-    kinematics-only                  minus SoleID: +0.471 [+0.455, +0.488]  p = 0.00e+00
-    Newton + proportional split      minus SoleID: +0.110 [+0.094, +0.127]  p = 6.84e-40
-    SoleID without the prior         minus SoleID: +0.045 [+0.029, +0.061]  p = 6.55e-08
-    speed slope: +0.138 per m/s [+0.124, +0.151]  p = 4.80e-88
+    kinematics-only                  minus SoleID: +0.471 [+0.455, +0.487]  p = 0.00e+00
+    Newton + proportional split      minus SoleID: +0.110 [+0.094, +0.126]  p = 2.13e-41
+    SoleID without the prior         minus SoleID: +0.047 [+0.031, +0.063]  p = 8.71e-09
+    speed slope: +0.140 per m/s [+0.127, +0.153]  p = 3.96e-94
 
     age group (SoleID stance): Older 3.20 %BW, Young 3.10 %BW
     SoleID stance mean 3.13 %BW [3.00, 3.28] (bootstrap)
     SoleID hip mean 0.199 Nm/kg [0.191, 0.209] (bootstrap)
-    SoleID beats the Newton baseline in 98.3 % of trials, the no-prior arm in 87.4 %
+    SoleID beats the Newton baseline in 98.3 % of trials, the no-prior arm in 87.9 %
 
-    prior gain vs whole-body dynamics residual: slope +0.519 [+0.478, +0.561] per %BW, p = 3.4e-134, r = 0.76
+    prior gain vs whole-body dynamics residual: slope +0.541 [+0.503, +0.580] per %BW, p = 3.4e-167, r = 0.79
 
 --- 2. external validation and application ---
 

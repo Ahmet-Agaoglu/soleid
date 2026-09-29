@@ -8,6 +8,7 @@ Literature values, method parameters and data-set design facts are not checked.
 import io
 import json
 import os
+import re
 
 import numpy as np
 import pandas as pd
@@ -15,14 +16,33 @@ import pandas as pd
 import config
 
 R = config.RESULTS
-TEX = config.MANUSCRIPT_TEX
+# one source file, or several separated by ';' (main text and supplementary material)
+TEX = os.environ.get("SOLEID_MANUSCRIPT") or config.MANUSCRIPT_TEX
 
-if TEX and os.path.exists(TEX):
-    body = io.open(TEX, encoding="utf-8").read().split(r"\begin{document}")[1]
+
+def _read_tex(path):
+    """The body of one source file, with the files it \\input{}s inlined."""
+    src = io.open(path, encoding="utf-8").read()
+    if r"\begin{document}" in src:
+        src = src.split(r"\begin{document}")[1]
+    here = os.path.dirname(path)
+
+    def inline(m):
+        f = os.path.join(here, m.group(1))
+        f = f if f.endswith(".tex") else f + ".tex"
+        return _read_tex(f) if os.path.exists(f) else m.group(0)
+    return re.sub(r"\\input\{([^}]*)\}", inline, src)
+
+
+_paths = [p for p in (TEX or "").split(";") if p]
+if _paths and all(os.path.exists(p) for p in _paths):
+    body = "\n".join(_read_tex(p) for p in _paths)
     # digit groups are written 19\,378 in the text; compare against the bare digits
     flat = body.replace("\\,", "")
+    print("manuscript:", "; ".join(os.path.basename(p) for p in _paths))
 else:
     flat = None                         # no manuscript source: compare with the printed values only
+    print("no manuscript source: printed values are compared with the results only")
 
 t = pd.read_csv(os.path.join(R, "test_all_trials.csv"))
 cam = pd.read_csv(os.path.join(R, "camargo_treadmill_strides.csv"))
@@ -182,15 +202,15 @@ CHECKS = [
     ("Newton hip", t.Newton_prop_hip.mean(), "0.398"),
     ("Kin-only stance", t.Kin_only_stance.mean(), "6.36"),
     ("Kin-only hip", t.Kin_only_hip.mean(), "0.793"),
-    ("no-prior stance", t.SoleID_v1_stance.mean(), "4.45"),
-    ("no-prior hip", t.SoleID_v1_hip.mean(), "0.281"),
+    ("no-prior stance", t.SoleID_v1_stance.mean(), "4.50"),
+    ("no-prior hip", t.SoleID_v1_hip.mean(), "0.285"),
     ("win rate vs Newton", 100 * (t.SoleID_stance < t.Newton_prop_stance).mean(), "98.3"),
-    ("win rate vs no-prior", 100 * (t.SoleID_stance < t.SoleID_v1_stance).mean(), "87.4"),
+    ("win rate vs no-prior", 100 * (t.SoleID_stance < t.SoleID_v1_stance).mean(), "87.9"),
     ("Fukuchi dynamics residual", t.newton_check.mean(), "4.5"),
 
-    ("prior gain slope", st["gain_vs_newton_check"]["slope"], "0.519"),
-    ("prior gain r", st["gain_vs_newton_check"]["r"], "0.76"),
-    ("gain Fukuchi", (t.SoleID_v1_stance - t.SoleID_stance).mean(), "1.32"),
+    ("prior gain slope", st["gain_vs_newton_check"]["slope"], "0.541"),
+    ("prior gain r", st["gain_vs_newton_check"]["r"], "0.79"),
+    ("gain Fukuchi", (t.SoleID_v1_stance - t.SoleID_stance).mean(), "1.37"),
     ("gain Camargo tm", (cam.SoleID_noVPP_stance - cam.SoleID_stance).mean(), "2.65"),
     ("gain Camargo lg", (lg.SoleID_noVPP_stance - lg.SoleID_stance).mean(), "3.26"),
     ("gain Camargo ramp", (ramp.SoleID_noVPP_stance - ramp.SoleID_stance).mean(), "3.78"),
@@ -199,6 +219,19 @@ CHECKS = [
     ("Camargo tm hip", cam.SoleID_hip.mean(), "0.235"),
     ("Camargo tm Newton stance", cam.Newton_prop_stance.mean(), "8.59"),
     ("Camargo tm Newton hip", cam.Newton_prop_hip.mean(), "0.561"),
+    ("Camargo tm SoleID ankle", cam.SoleID_ankle.mean(), "0.031"),
+    ("Camargo tm SoleID knee", cam.SoleID_knee.mean(), "0.127"),
+    ("Camargo level SoleID ankle", lg.SoleID_ankle.mean(), "0.048"),
+    ("Camargo level SoleID knee", lg.SoleID_knee.mean(), "0.200"),
+    ("Camargo ramp SoleID ankle", ramp.SoleID_ankle.mean(), "0.049"),
+    ("Camargo ramp SoleID knee", ramp.SoleID_knee.mean(), "0.214"),
+    # printed only by the layout with a summary table of every setting
+    ("summary: Camargo tm Newton ankle", cam.Newton_prop_ankle.mean(), "0.079"),
+    ("summary: Camargo tm Newton knee", cam.Newton_prop_knee.mean(), "0.301"),
+    ("summary: Camargo level Newton ankle", lg.Newton_prop_ankle.mean(), "0.103"),
+    ("summary: Camargo level Newton knee", lg.Newton_prop_knee.mean(), "0.408"),
+    ("summary: Camargo ramp Newton ankle", ramp.Newton_prop_ankle.mean(), "0.110"),
+    ("summary: Camargo ramp Newton knee", ramp.Newton_prop_knee.mean(), "0.440"),
     ("Camargo tm residual", cam.newton_check.mean(), "6.6"),
     ("Camargo lg stance", lg.SoleID_stance.mean(), "4.46"),
     ("Camargo lg hip", lg.SoleID_hip.mean(), "0.373"),
@@ -383,7 +416,7 @@ CHECKS = [
     ("kin cost ankle", _wf.imu_insole_ankle.mean() - _wf.lab_insole_ankle.mean(), "0.046"),
     ("kin cost shear", _wf.imu_insole_stance.mean() - _wf.lab_insole_stance.mean(), "0.46"),
     # single support and the ingredient ablation
-    ("single support, no prior", t.SoleID_v1_ss.mean(), "3.32"),
+    ("single support, no prior", t.SoleID_v1_ss.mean(), "3.46"),
     ("single support, SoleID", t.SoleID_ss.mean(), "2.52"),
     ("ablation: prior alone, stance", _ab["prior"]["stance"], "4.29"),
     ("ablation: prior smoothed, stance", _ab["prior_smooth"]["stance"], "4.07"),
@@ -426,11 +459,11 @@ CHECKS = [
     ("SPM shear, Bonferroni %", _sr["spm_bonferroni"]["results"]["SoleID_shear"]["percent_of_cycle"], "28"),
     ("Newton - SoleID gap", st["mixed_stance"]["contrasts"]["Newton_prop"]["estimate"], "3.2"),
     ("trial-weighted cam - fukuchi", cam.SoleID_stance.mean() - t.SoleID_stance.mean(), "0.47"),
-    ("half slope, trimmed", _mt.params["newton_check"], "0.565"),
-    ("half slope, trimmed lo", _mt.conf_int().loc["newton_check", 0], "0.497"),
-    ("half slope, trimmed hi", _mt.conf_int().loc["newton_check", 1], "0.634"),
+    ("half slope, trimmed", _mt.params["newton_check"], "0.572"),
+    ("half slope, trimmed lo", _mt.conf_int().loc["newton_check", 0], "0.507"),
+    ("half slope, trimmed hi", _mt.conf_int().loc["newton_check", 1], "0.637"),
     ("half slope, subject means", np.polyfit(_gs.newton_check, _gs.gain, 1)[0], "0.38"),
-    ("half slope, subject r", np.corrcoef(_gs.newton_check, _gs.gain)[0, 1], "0.72"),
+    ("half slope, subject r", np.corrcoef(_gs.newton_check, _gs.gain)[0, 1], "0.73"),
     # degradation interactions
     ("combined increment, stance", (_dgw["stance"] - _dgc["stance"]).mean(), "0.84"),
     ("sum of increments, stance", _deg_sum("stance"), "1.30"),
@@ -477,14 +510,14 @@ CHECKS = [
     ("paired stance, Newton", _srp["stance"]["Newton_prop"]["estimate"], "3.26"),
     ("paired stance, Newton lo", _srp["stance"]["Newton_prop"]["lo"], "2.87"),
     ("paired stance, Newton hi", _srp["stance"]["Newton_prop"]["hi"], "3.65"),
-    ("paired stance, no prior", _srp["stance"]["SoleID_v1"]["estimate"], "1.39"),
-    ("paired stance, no prior lo", _srp["stance"]["SoleID_v1"]["lo"], "1.03"),
-    ("paired stance, no prior hi", _srp["stance"]["SoleID_v1"]["hi"], "1.74"),
+    ("paired stance, no prior", _srp["stance"]["SoleID_v1"]["estimate"], "1.44"),
+    ("paired stance, no prior lo", _srp["stance"]["SoleID_v1"]["lo"], "1.08"),
+    ("paired stance, no prior hi", _srp["stance"]["SoleID_v1"]["hi"], "1.80"),
     ("paired ds, Newton", _srp["ds"]["Newton_prop"]["estimate"], "5.786"),
     ("paired ds, Newton lo", _srp["ds"]["Newton_prop"]["lo"], "5.184"),
     ("paired hip, kin-only (table)", _srp["hip"]["Kin_only"]["estimate"], "0.600"),
     ("paired hip, Newton (table)", _srp["hip"]["Newton_prop"]["estimate"], "0.200"),
-    ("paired hip, no prior (table)", _srp["hip"]["SoleID_v1"]["estimate"], "0.085"),
+    ("paired hip, no prior (table)", _srp["hip"]["SoleID_v1"]["estimate"], "0.088"),
     ("kin-only vertical, stance", _px["kin_only_vertical_stance"]["mean"], "25.15"),
     ("Wang kin contrast (paired)", -_px["wang_kin_contrast"]["hip"]["estimate"], "0.148"),
     ("Wang kin contrast lo", -_px["wang_kin_contrast"]["hip"]["hi"], "0.060"),
@@ -533,7 +566,7 @@ _scale = q.reason.fillna("").str.startswith("force/mass")
 CHECKS += [
     # Table III
     ("T3 kinematics-only, double support", t.Kin_only_ds.mean(), "9.80"),   # the table said 9.81
-    ("T3 no prior, double support", t.SoleID_v1_ds.mean(), "6.03"),
+    ("T3 no prior, double support", t.SoleID_v1_ds.mean(), "5.99"),
     ("T3 kinematics-only, single support", t.Kin_only_ss.mean(), "3.51"),
     ("T3 Newton, single support", t.Newton_prop_ss.mean(), "3.52"),
     ("T3 kinematics-only ankle", t.Kin_only_ankle.mean(), "0.445"),
@@ -541,24 +574,25 @@ CHECKS += [
     ("T3 no prior ankle", t.SoleID_v1_ankle.mean(), "0.032"),
     ("T3 kinematics-only knee", t.Kin_only_knee.mean(), "0.582"),
     ("T3 Newton knee", t.Newton_prop_knee.mean(), "0.221"),
-    ("T3 no prior knee", t.SoleID_v1_knee.mean(), "0.155"),
+    ("T3 no prior knee", t.SoleID_v1_knee.mean(), "0.157"),
     ("T3 hip contrast, kin-only lo", _srp["hip"]["Kin_only"]["lo"], "0.557"),
     ("T3 hip contrast, kin-only hi", _srp["hip"]["Kin_only"]["hi"], "0.643"),
     ("T3 hip contrast, Newton lo", _srp["hip"]["Newton_prop"]["lo"], "0.176"),
     ("T3 hip contrast, Newton hi", _srp["hip"]["Newton_prop"]["hi"], "0.225"),
-    ("T3 hip contrast, no prior lo", _srp["hip"]["SoleID_v1"]["lo"], "0.063"),
-    ("T3 hip contrast, no prior hi", _srp["hip"]["SoleID_v1"]["hi"], "0.107"),
+    ("T3 hip contrast, no prior lo", _srp["hip"]["SoleID_v1"]["lo"], "0.066"),
+    ("T3 hip contrast, no prior hi", _srp["hip"]["SoleID_v1"]["hi"], "0.110"),
     # IV-A
     ("bootstrap over subjects, hip lo", _sr["bootstrap_subjects"]["SoleID_hip"]["lo"], "0.185"),
     ("bootstrap over subjects, hip hi", _sr["bootstrap_subjects"]["SoleID_hip"]["hi"], "0.215"),
     ("paired ds, Newton hi", _srp["ds"]["Newton_prop"]["hi"], "6.388"),
-    ("error slope on speed", st["mixed_stance"]["speed_slope"]["estimate"], "3.466"),
+    ("error slope on speed", st["mixed_stance"]["speed_slope"]["estimate"], "3.472"),
     ("pivot split vertical error", _vs.vert_stance.mean(), "16.7"),
     ("pivot split vertical, % of stride range", _fr["vertical_error_of_range_pct"], "14.5"),
     ("SPM shear, largest difference at % cycle", _fr["spm_max_at_pct"], "2"),
     ("Fig. 2 trial speed", _f2["speed"], "1.12"),
     # IV-B
-    ("gain slope lo", st["gain_vs_newton_check"]["lo"], "0.478"),
+    ("gain slope lo", st["gain_vs_newton_check"]["lo"], "0.503"),
+    ("gain slope hi", st["gain_vs_newton_check"]["hi"], "0.580"),
     ("calibration: prior bias (N)", _pvg.loc[0.2, "prior_bias_N"], "-19.6"),
     ("calibration: right-foot shear bias (N)", _pvg.loc[0.2, "sol_bias_N"], "-10.1"),
     ("calibration: hip offset, stance", _pvg.loc[0.2, "hip_bias_stance"], "0.13"),
@@ -583,7 +617,7 @@ CHECKS += [
     ("level ground, slow", lg[lg.speed_class == "slow"].SoleID_stance.mean(), "3.62"),
     ("level ground, normal", lg[lg.speed_class == "normal"].SoleID_stance.mean(), "4.62"),
     ("level ground, fast", lg[lg.speed_class == "fast"].SoleID_stance.mean(), "5.16"),
-    ("ramp vertical-only, shallowest", ramp[ramp.incline == 1].NoShear_stance.mean(), "12.2"),
+    ("ramp vertical-only, shallowest", ramp[ramp.incline == 1].NoShear_stance.mean(), "12.0"),
     ("ramp vertical-only, steepest", ramp[ramp.incline == 6].NoShear_stance.mean(), "10.4"),
     ("ramp inclination 1", _ang["1"], "5.3"),
     ("ramp inclination 2", _ang["2"], "7.4"),
@@ -724,6 +758,8 @@ for name, val, written in CHECKS:
         (timing if name.startswith("solve time") else fails).append(
             f"  {name:28s} data {got:>10s}   paper {written:>10s}")
     if flat is not None and written not in flat:
+        if name.startswith("summary:"):       # a layout without the summary table does not print it
+            continue
         fails.append(f"  {name:28s} value {written} NOT FOUND in the manuscript")
 print(f"{len(CHECKS)} numbers checked, {len(fails)} problems")
 for f in fails:
@@ -756,9 +792,12 @@ _bins = pd.cut(t.speed, [0, 0.8, 1.2, 1.6, 3.0])
 _by_bin = t.groupby(_bins, observed=True)[["Kin_only_stance", "Newton_prop_stance", "SoleID_v1_stance",
                                             "SoleID_stance"]].mean()
 _by_cond = dg.groupby(["condition", "level", "arm"]).stance.mean().unstack("arm")
+_by_incl = ramp.groupby("incline")[["NoShear_stance", "Newton_prop_stance", "SoleID_noVPP_stance",
+                                     "SoleID_stance"]].mean()
+_vo_below_newton = _by_incl.NoShear_stance < _by_incl.Newton_prop_stance
 for name, ok in [
-    ("Holm: largest adjusted p written as 7e-14",
-     f"{_sr['holm']['max_adjusted_p']:.0e}" == "7e-14" and (flat is None or r"7\times10^{-14}" in flat)),
+    ("Holm: largest adjusted p written as 1e-14",
+     f"{_sr['holm']['max_adjusted_p']:.0e}" == "1e-14" and (flat is None or r"1\times10^{-14}" in flat)),
     ("Table III contrasts all p < 1e-13", _contrast_p < 1e-13 and (flat is None or r"p < 10^{-13}" in flat)),
     ("Fig. 2 shows a test subject, not a calibration one", _f2["subject"] not in _CAL),
     ("plate label: every counter-clockwise contact agrees", bool(_agree[_lgtm.direction == "ccw"].all())),
@@ -770,6 +809,15 @@ for name, ok in [
     ("II-D: the 0.2 m floor on the lever is never active", _fr["smallest_lever_m"] > 0.2),
     ("II-E: six test trials, and no calibration trial, fail the marker check",
      len(_skip) == 6 and _calj["n_trials"] == 40),
+    ("IV-D: SoleID and no-prior both degrade steadily with grade",
+     bool(_by_incl.SoleID_stance.is_monotonic_increasing and _by_incl.SoleID_noVPP_stance.is_monotonic_increasing)),
+    ("IV-D: vertical-only crosses the Newton baseline only at the steepest grade",
+     list(_vo_below_newton.index[_vo_below_newton]) == [6.0]),
+    ("IV-D: SoleID lowest of all arms in every Camargo setting, shear and hip",
+     all(df[f"SoleID_{m}"].mean() < min(df[c].mean() for c in df.columns
+                                          if c.endswith(f"_{m}") and not c.startswith("SoleID_"))
+         and df[f"SoleID_{m}"].mean() < df[f"SoleID_noVPP_{m}"].mean()
+         for df in (cam, lg, ramp) for m in ("stance", "hip"))),
 ]:
     print(f"  {'OK ' if ok else 'FAIL'} {name}")
     if not ok:

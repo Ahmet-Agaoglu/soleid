@@ -1,9 +1,9 @@
-# SoleID
+# SoleID: shear ground reaction force and joint torques from instrumented insoles
 
 Code and results for the paper
 
-> A. Ağaoğlu, "Unknown-Input Estimation of Shear Ground Reaction Forces and Sagittal-Plane Joint
-> Torques from Insole Vertical Force and Kinematics," manuscript, 2026.
+> A. Agaoglu, "Physics-Based Estimation of Shear Force and Joint Torques from Insoles for Wearable
+> Robots," manuscript, 2026.
 
 An instrumented insole measures the vertical ground reaction force and the center of pressure but
 not the shear (anteroposterior) component, which joint moments need. SoleID treats the missing
@@ -32,7 +32,7 @@ the result files and compares it with the printed value.
 | `verify_manuscript.py` | every number of the paper, recomputed from `results/` |
 | `config.py` | all paths (data, results, figures) |
 | `results/` | the result files the paper draws on |
-| `figures/` | Figs. 2-5 as written by `make_figures.py` (Fig. 1 is a drawing) |
+| `figures/` | the multi-panel figures `mp_*` (`multipanel_figures.py`) and the single-panel figures `fig2`-`fig5` (`make_figures.py`); `concept.png` is a drawing |
 
 ## Requirements
 
@@ -100,22 +100,25 @@ motion capture as reference. License: CC BY 3.0 NL.
 ## Running
 
 ```
-python run_all.py --list      # the 41 steps and what each produces
+python run_all.py --list      # the 42 steps and what each produces
 python run_all.py             # all of them, in order; several hours on one CPU
 python verify_manuscript.py   # the check of the paper's numbers alone, in seconds
 ```
 
 `verify_manuscript.py` recomputes each number of the paper from `results/` and compares it with the
 value printed in the paper, rounded the same way; it exits with a non-zero status on any mismatch.
-Values taken from the literature, method parameters and facts of the data-set design are not
-checked. The analyses are deterministic (every random draw has a fixed seed), so a full run
-reproduces the committed result files, with one exception: the solve times in Table X are
-wall-clock measurements that vary with the machine and its load, and `verify_manuscript.py` lists
-them separately instead of counting them as mismatches.
+With the environment variable `SOLEID_MANUSCRIPT` set to the manuscript source (several files, such
+as main text and supplementary material, separated by `;`), it also checks that each of these values
+is written in the text, tables included. Values taken from the literature, method parameters and
+facts of the data-set design are not checked. The analyses are deterministic (every random draw has
+a fixed seed), so a full run reproduces the committed result files, with one exception: the solve
+times of the moving-horizon form are wall-clock measurements that vary with the machine and its
+load, and `verify_manuscript.py` lists them separately instead of counting them as mismatches.
 
 `results/` holds every file the checks and the figures read. Large intermediate files (the per-trial
 time series and metrics of the controlled layer, the stride-normalized reference curves) are left
-out and are recreated by `run_all.py`; of the time series, only the trial shown in Fig. 2 is included.
+out and are recreated by `run_all.py`; what the figures show of them is kept (the time series of the
+trial in Fig. 2, and the three seconds of the trial in Fig. 6A, `wang_example_trial.csv`).
 
 `audit_core.py` (the physics and the estimator on cases with a known answer) and `audit_data.py`
 (protocol integrity and physical plausibility of each data set) are additional checks that can be run
@@ -125,22 +128,29 @@ at any time.
 
 | Paper | Scripts | Result files |
 |---|---|---|
-| Table I, data sets | `protocol.py`, `camargo_run.py`, `camargo_overground.py`, `wang_run.py` | `fukuchi_quality.csv`, `test_all_trials.csv`, `camargo_*`, `wang_application.csv` |
-| Table II, other calibration draws | `split_sensitivity.py`, `split_propagate.py` | `grid_all_trials.csv`, `split_sensitivity.csv`, `split_propagated_*.csv` |
-| Table III, controlled layer | `protocol.py`, `vpp_split.py`, `stats_revision.py`, `stats_paired_extra.py` | `test_all_trials.csv`, `vpp_split_test.csv`, `stats_revision.json`, `stats_paired_extra.json` |
-| Table IV, input degradation | `final_degradation.py`, `final_read_checks.py` | `final_degradation_trials.csv`, `final_read_checks.json` |
-| Table V, external layer | `camargo_run.py`, `camargo_overground.py` | `camargo_treadmill_strides.csv`, `camargo_levelground_steps.csv`, `camargo_ramp_steps.csv` |
-| Table VI, published results on the Camargo data | `comparison_tables.py` | `tables_comparison.tex`, `comparison_tables.md` |
-| Table VII, real insoles and IMU suit | `wang_run.py`, `reference_agreement.py` | `wang_application.csv`, `reference_agreement.json` |
-| Table VIII, kinematics x force source | `wang_factorial.py`, `wang_factorial_stats.py` | `wang_factorial.csv`, `wang_factorial_stats.json` |
-| Table IX, the references | `reference_agreement.py` | `reference_agreement.json` |
-| Table X, moving-horizon form | `moving_horizon.py`, `statistics.py` | `mhe_fukuchi.csv`, `mhe_wang.csv`, `statistics.json` |
-| Table XI, latency pilot | `causal_chain.py`, `causal_design.py`, `causal_variants.py` | `causal_chain.csv`, `causal_design_*.csv`, `causal_variants.csv` |
-| Fig. 2 (`fig2_timeseries`) | `protocol.py`, `make_figures.py` | `fig2_trial.json` and that trial's `*_timeseries.csv` |
-| Fig. 3 (`fig3_speed`) | `make_figures.py` | `test_all_trials.csv`, `wang_application.csv` |
-| Fig. 4 (`fig4_spm`) | `curves.py`, `statistics.py`, `make_figures.py` | `curves_fukuchi.npz`, `statistics.json` |
-| Fig. 5 (`fig5_ramp`) | `camargo_overground.py`, `ramp_angles.py`, `make_figures.py` | `camargo_ramp_steps.csv`, `ramp_angles.json` |
+| Fig. 1 (`mp_overview`), problem, estimator and data | `protocol.py`, `camargo_run.py`, `camargo_overground.py`, `ramp_angles.py`, `wang_run.py` | `calibration.json`, `test_all_trials.csv`, `camargo_*`, `ramp_angles.json`, `wang_application.csv` |
+| Fig. 2 (`mp_accuracy`), controlled layer | `protocol.py`, `vpp_split.py`, `curves.py`, `statistics.py` | `test_all_trials.csv`, `vpp_split_test.csv`, `curves_fukuchi.npz`, `statistics.json`, `fig2_trial.json` and that trial's `*_timeseries.csv` |
+| Fig. 3 (`mp_mechanism`), where the gain comes from | `ablation_qp.py`, `statistics.py`, `stats_revision.py`, `hip_bias_breakdown.py` | `ablation_qp.json`, `statistics.json`, `stats_revision.json`, `hip_bias_breakdown.json` |
+| Fig. 4 (`mp_robustness`), input degradation | `final_degradation.py`, `wang_run.py` | `final_degradation_trials.csv`, `wang_application.csv` |
+| Fig. 5 (`mp_generalization`), external layer and calibration draws | `camargo_run.py`, `camargo_overground.py`, `ramp_angles.py`, `split_sensitivity.py`, `split_propagate.py` | `camargo_*`, `ramp_angles.json`, `split_sensitivity.csv`, `split_propagated_*.csv` |
+| Fig. 6 (`mp_hardware`), real insoles and IMU suit | `wang_run.py`, `reference_agreement.py`, `wang_factorial.py` | `wang_application.csv`, `reference_agreement.json`, `wang_example_trial.csv`, `wang_factorial.csv` |
+| Fig. 7 (`mp_online`), moving-horizon form and latency | `moving_horizon.py`, `causal_chain.py`, `statistics.py` | `mhe_fukuchi.csv`, `mhe_wang.csv`, `causal_chain.csv`, `statistics.json` |
+| Table 1, accuracy in every setting | `comparison_tables.py` | `tables_summary.tex` |
+| Table 2, published estimators | `comparison_tables.py` | `tables_published.tex`, `comparison_tables.md` |
+| Table S1, other calibration draws | `split_sensitivity.py`, `split_propagate.py` | `grid_all_trials.csv`, `split_sensitivity.csv`, `split_propagated_*.csv` |
+| Table S2, controlled layer | `protocol.py`, `vpp_split.py`, `stats_revision.py`, `stats_paired_extra.py` | `test_all_trials.csv`, `vpp_split_test.csv`, `stats_revision.json`, `stats_paired_extra.json` |
+| Table S3, tolerances | `final_degradation.py`, `final_read_checks.py` | `final_degradation_trials.csv`, `final_read_checks.json` |
+| Table S4, external layer | `camargo_run.py`, `camargo_overground.py` | `camargo_treadmill_strides.csv`, `camargo_levelground_steps.csv`, `camargo_ramp_steps.csv` |
+| Table S5, real insoles and IMU suit | `wang_run.py`, `reference_agreement.py` | `wang_application.csv`, `reference_agreement.json` |
+| Table S6, kinematics x force source | `wang_factorial.py`, `wang_factorial_stats.py` | `wang_factorial.csv`, `wang_factorial_stats.json` |
+| Table S7, the references | `reference_agreement.py` | `reference_agreement.json` |
+| Table S8, moving-horizon form | `moving_horizon.py`, `statistics.py` | `mhe_fukuchi.csv`, `mhe_wang.csv`, `statistics.json` |
+| Table S9, latency pilot | `causal_chain.py`, `causal_design.py`, `causal_variants.py` | `causal_chain.csv`, `causal_design_*.csv`, `causal_variants.csv` |
 | Other values in the text | `ablation_qp.py`, `friction_cone.py`, `sole_normal.py`, `hip_bias_decomp.py`, `hip_bias_breakdown.py`, `phase_vpp.py`, `design_loop.py`, `norms.py`, `qc_audit.py`, `final_read_checks.py` | the files of the same names in `results/` |
+
+`make_figures.py` draws the same results as single-panel figures (`fig2_timeseries`, `fig3_speed`,
+`fig4_spm`, `fig5_ramp`) for a shorter layout of the paper, and `comparison_tables.py` also writes the
+published results on the Camargo data alone (`tables_comparison.tex`).
 
 ## Citation
 

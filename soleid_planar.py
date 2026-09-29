@@ -525,8 +525,8 @@ def main(subj="WBDS01", trial="walkT05"):
     kin_timing = dict(agreement_pct=float(100 * np.mean(kin_contact["R"] == onR)),
                       vertical_rmse_pctBW=float(100 * np.sqrt(np.mean((kin["R"]["Fy"] - FyR) ** 2)) / BW))
 
-    # ---- arm D1: SoleID v1 (dynamics + smoothness)
-    vR, vL, status1, rt1 = soleid_qp(S, FyR, FyL)
+    # ---- arm D1: SoleID without the prior: the same program and smoothness cut-off, w_prior = 0
+    vR, vL, status1, rt1 = soleid_qp(S, FyR, FyL, fc_smooth=V2_PARAMS["fc_smooth"])
     sole1 = {"R": inverse_dynamics(segs, "R", vR, FyR, cR), "L": inverse_dynamics(segs, "L", vL, FyL, cL)}
     # ---- arm D2: SoleID v2 (+ VPP prior + torque smoothness)
     pelvis = pelvis_centroid(P, n)

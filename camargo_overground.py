@@ -134,9 +134,10 @@ def levelground_meta(trial):
 
 
 def incline_of(trial):
-    """ramp_<k>_<l|r>_... : k indexes the inclination, l/r the direction of travel."""
+    """ramp_<k>_<l|r>_... : k indexes the inclination, l/r the direction of travel. Some subjects'
+    files are named Ramp_..., so the prefix is compared without regard to case."""
     parts = trial.split("_")
-    if parts[0] != "ramp":
+    if parts[0].lower() != "ramp":
         return 0.0
     try:
         return float(parts[1])

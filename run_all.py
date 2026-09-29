@@ -56,8 +56,9 @@ STEPS = [
     ("hip_bias_breakdown.py", [], "hip offset by subject, limb, phase, speed"),
     ("qc_audit.py", [], "trial flow and exclusions"),
     ("final_read_checks.py", ["--lever"], "remaining single numbers of the paper"),
-    ("comparison_tables.py", [], "published results on the same data sets"),
-    ("make_figures.py", [], "Figs. 2-5"),
+    ("comparison_tables.py", [], "summary of every setting and published results, as LaTeX tables"),
+    ("make_figures.py", [], "single-panel figures (fig2 to fig5)"),
+    ("multipanel_figures.py", [], "multi-panel figures (mp_overview to mp_online)"),
     ("verify_manuscript.py", [], "every number of the paper against the results"),
 ]
 
